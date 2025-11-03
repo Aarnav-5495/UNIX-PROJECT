@@ -1,0 +1,77 @@
+
+#!/bin/bash
+
+while true
+do
+    clear
+    echo "=============================================="
+    echo "          SYSTEM HEALTH REPORT"
+    echo "=============================================="
+    echo
+    echo "Description:"
+    echo "This project generates a detailed report about system performance."
+    echo "It provides information on CPU load, memory usage, disk space, and uptime."
+    echo "You can view each report individually or see a full summary of the system health."
+    echo
+    echo "=============================================="
+    echo "                 MAIN MENU"
+    echo "=============================================="
+    echo "1. CPU Load"
+    echo "2. Memory Usage"
+    echo "3. Disk Space Usage"
+    echo "4. System Uptime"
+    echo "5. Full System Health Report"
+    echo "6. Exit"
+    echo "----------------------------------------------"
+    read -p "Enter your choice [1-6]: " choice
+
+    case $choice in
+        1)
+            echo
+            echo "----- CPU LOAD -----"
+            uptime | awk -F'load average:' '{ print "CPU Load (1 min, 5 min, 15 min): " $2 }'
+            echo
+            read -p "Press Enter to continue..."
+            ;;
+        2)
+            echo
+            echo "----- MEMORY USAGE -----"
+            free -h | awk 'NR==2{printf "Memory Used: %s / %s (%.2f%%)\n", $3,$2,$3*100/$2 }'
+            echo
+            read -p "Press Enter to continue..."
+            ;;
+        3)
+            echo
+            echo "----- DISK SPACE USAGE -----"
+            df -h --total | awk '/total/{printf "Disk Used: %s / %s (%s used)\n",$3,$2,$5}'
+            echo
+            read -p "Press Enter to continue..."
+            ;;
+        4)
+            echo
+            echo "----- SYSTEM UPTIME -----"
+            uptime -p | sed 's/up //'
+            echo
+            read -p "Press Enter to continue..."
+            ;;
+        5)
+            echo
+            echo "========== FULL SYSTEM HEALTH REPORT =========="
+            uptime | awk -F'load average:' '{ print "CPU Load (1 min, 5 min, 15 min): " $2 }'
+            free -h | awk 'NR==2{printf "Memory Used: %s / %s (%.2f%%)\n", $3,$2,$3*100/$2 }'
+            df -h --total | awk '/total/{printf "Disk Used: %s / %s (%s used)\n",$3,$2,$5}'
+            uptime -p | awk '{print "System Uptime:", substr($0,4)}'
+            echo "=============================================="
+            echo
+            read -p "Press Enter to continue..."
+            ;;
+        6)
+            echo "Exiting... Goodbye!"
+            exit 0
+            ;;
+        *)
+            echo "Invalid choice! Please enter a number between 1-6."
+            sleep 2
+            ;;
+    esac
+done
